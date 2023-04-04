@@ -49,6 +49,19 @@ exports.findByRoom = function(req, res, next){
     })
 }
 
+exports.findSeatShowtime = function(req, res, next){
+    const showtimeId = req.params.id
+    let sql = `SELECT * FROM seat_showtime WHERE id_showtime = ?;`
+
+    db.query(sql, [showtimeId], (err, result)=>{
+        if (err) {
+            console.error('Error executing query: ' + err.stack)
+            return
+        }
+        res.json({seatshowtime: result})
+    })
+}
+
 exports.create = function(req, res, next){
     let sql = `SELECT * FROM acc WHERE id_acc = ?;`
     var token = req.header("Authorization") 
@@ -67,7 +80,6 @@ exports.create = function(req, res, next){
 
                 const newSeat = {
                     number_seat: req.body.name,
-                    status_seat: 0,
                     id_room: req.body.roomId
                 }
 
@@ -105,10 +117,9 @@ exports.update = function(req, res, next){
                 const seatId = req.params.id
                 const name = req.body.name
                 const roomId = req.body.roomId
-                const status = 0
-                sql = `UPDATE ${table} SET number_seat = ?, status_seat = ?, id_room = ? WHERE id_seat = ?`;
+                sql = `UPDATE ${table} SET number_seat = ?, id_room = ? WHERE id_seat = ?`;
 
-                db.query(sql, [name, status, roomId, seatId], (err, result)=>{
+                db.query(sql, [name, roomId, seatId], (err, result)=>{
                     if (err) {
                         console.error('Error executing query: ' + err.stack);
                         res.json({msg: "Fail"})
@@ -203,3 +214,4 @@ exports.deleteMany = function(req, res, next){
     }
     
 }
+

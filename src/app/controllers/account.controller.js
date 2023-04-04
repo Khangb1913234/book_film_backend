@@ -83,7 +83,6 @@ exports.signUp = function(req, res, next){
             return;
         }
         if(result.length > 0){
-            console.log(result)
             res.json({msg: "This username or email has been used"})
         }
         else{

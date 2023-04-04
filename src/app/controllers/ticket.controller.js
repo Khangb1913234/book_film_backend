@@ -156,16 +156,16 @@ exports.create = function(req, res, next){
                 res.json(err.sqlMessage)
             }
             if(account[0].role_acc == "member"){
-                sql = `SELECT * FROM seat`
-                db.query(sql, (err, seat)=>{
+                sql = `SELECT * FROM seat_showtime`
+                db.query(sql, (err, seat_showtime)=>{
                     if (err) {
                         console.error('Error executing query: ' + err.stack)
                         res.json(err.sqlMessage)
                     }
                     let check = 0
-                    for(let i = 0; i < seat.length; i++)
+                    for(let i = 0; i < seat_showtime.length; i++)
                         for(let j = 0; j < req.body.seatId.length; j++)
-                            if(seat[i].status_seat == 1 && seat[i].id_seat == req.body.seatId[j]){
+                            if(req.body.seatId == seat_showtime[i].id_seat && req.body.showtimeId == seat_showtime[i].id_showtime && seat_showtime[i].status_seat == 1){
                                 check = 1
                                 break
                             }
@@ -176,8 +176,7 @@ exports.create = function(req, res, next){
                             sql = `INSERT INTO ${table} SET ?`
                             let day = new Date()
                             temp = `${day.getFullYear()}-${day.getMonth()+1}-${day.getDate()}`
-                            console.log(account.id_acc)
-                            const newTicket = {
+                            let newTicket = {
                                 id_showtime: req.body.showtimeId,
                                 id_acc: account[0].id_acc,
                                 id_seat: req.body.seatId[i],
@@ -192,9 +191,13 @@ exports.create = function(req, res, next){
                                             reject(err);
                                         });
                                     }
-                                    console.log(ticket)
-                                    sql = `UPDATE seat SET status_seat = ? WHERE id_seat = ?`
-                                    db.query(sql, [1, req.body.seatId[i]], (err, result)=>{
+                                    let newSeatShowtime = {
+                                        id_showtime: req.body.showtimeId,
+                                        id_seat: req.body.seatId[i],
+                                        status_seat: 1
+                                    }
+                                    sql = `INSERT INTO seat_showtime SET ?`
+                                    db.query(sql, newSeatShowtime, (err, result)=>{
                                         if (err) {
                                             db.rollback(() => {
                                                 reject(err);

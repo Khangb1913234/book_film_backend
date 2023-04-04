@@ -16,7 +16,6 @@ exports.findAll = function(req, res, next){
             let temp = moment.tz(result[i].date_showtime, 'Asia/Ho_Chi_Minh')
             result[i].date_showtime = temp.format("YYYY-MM-DD")
         }
-        console.log(result)
         res.json({showtimes: result})
     })
     
@@ -48,7 +47,6 @@ exports.findFull = function(req, res, next){
         }
         let temp = moment.tz(result[0].date_showtime, 'Asia/Ho_Chi_Minh')
         result[0].date_showtime = temp.format("YYYY-MM-DD")
-        console.log(result)
         res.json({showtime: result})
     })
 }
@@ -72,6 +70,7 @@ exports.create = function(req, res, next){
                 const newShowTime = {
                     date_showtime: req.body.date,
                     start_showtime: req.body.start,
+                    end_showtime: req.body.end,
                     price_showtime: Number(req.body.price),
                     id_film: req.body.filmId,
                     id_room: req.body.roomId
@@ -113,12 +112,13 @@ exports.update = function(req, res, next){
                 const showtimeId = req.params.id
                 const date = req.body.date
                 const start = req.body.start
+                const end = req.body.end
                 const price = Number(req.body.price)
                 const filmId = req.body.filmId
                 const roomId = req.body.roomId
-                sql = `UPDATE ${table} SET date_showtime = ?, start_showtime = ?, price_showtime = ?, id_film = ?, id_room = ? WHERE id_showtime = ?`;
+                sql = `UPDATE ${table} SET date_showtime = ?, start_showtime = ?, end_showtime = ?, price_showtime = ?, id_film = ?, id_room = ? WHERE id_showtime = ?`;
 
-                db.query(sql, [date, start, price, filmId, roomId, showtimeId], (err, result)=>{
+                db.query(sql, [date, start, end, price, filmId, roomId, showtimeId], (err, result)=>{
                     if (err) {
                         console.error('Error executing query: ' + err.stack);
                         res.json({msg: "Fail"})

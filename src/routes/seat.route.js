@@ -7,7 +7,8 @@ module.exports = function(app){
     router.put("/update/:id", seats.update)
     router.delete("/delete/:id", seats.delete)
     router.delete("/action/:id", seats.deleteMany)
-    router.get("/byshowtime/:id", seats.findByRoom)
+    router.get("/byroom/:id", seats.findByRoom)
+    router.get("/seatshowtime/:id", seats.findSeatShowtime)
     router.get("/:id", seats.findOne)
     router.get("/", seats.findAll)
     
