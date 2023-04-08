@@ -74,36 +74,60 @@ exports.findOne = function(req, res, next){
     
 }
 
+// exports.signUp = function(req, res, next){
+//     let sql = `SELECT * FROM ${table} WHERE username_acc = ? OR mail_acc = ?;`
+
+//     db.query(sql, [req.body.username, req.body.mail], (err, result)=>{
+//         if(err){
+//             console.error('Error executing query: ' + err.stack);
+//             return;
+//         }
+//         if(result.length > 0){
+//             res.json({msg: "This username or email has been used"})
+//         }
+//         else{
+//             sql = `INSERT INTO ${table} SET ?`
+
+//             const newAccount = {
+//                 username_acc: req.body.username,
+//                 password_acc: bcrypt.hashSync(req.body.password, 10),
+//                 name_acc: req.body.username,
+//                 mail_acc: req.body.mail,
+//                 role_acc: "member"
+//             }
+
+//             db.query(sql, newAccount, (err, result)=>{
+//                 if (err) {
+//                     console.error('Error executing query: ' + err.stack)
+//                     res.json(err.sqlMessage)
+//                 }
+//                 res.json({msg: "You have become a member of KTMOVIE"});
+//             })
+//         }
+//     })
+// }
+
 exports.signUp = function(req, res, next){
-    let sql = `SELECT * FROM ${table} WHERE username_acc = ? OR mail_acc = ?;`
-
-    db.query(sql, [req.body.username, req.body.mail], (err, result)=>{
-        if(err){
-            console.error('Error executing query: ' + err.stack);
-            return;
+    let sql = `CALL SIGNUP(?, ?, ?, @result)`
+    db.query(sql, [req.body.username, bcrypt.hashSync(req.body.password, 10), req.body.mail, "member"], (err, acc)=>{
+        if (err) {
+            console.error('Error executing query: ' + err.stack)
+            res.json(err.sqlMessage)
         }
-        if(result.length > 0){
-            res.json({msg: "This username or email has been used"})
-        }
-        else{
-            sql = `INSERT INTO ${table} SET ?`
-
-            const newAccount = {
-                username_acc: req.body.username,
-                password_acc: bcrypt.hashSync(req.body.password, 10),
-                name_acc: req.body.username,
-                mail_acc: req.body.mail,
-                role_acc: "member"
+        sql = `SELECT @result AS result`
+        db.query(sql, (err, result)=>{
+            if (err) {
+                console.error('Error executing query: ' + err.stack)
+                res.json(err.sqlMessage)
             }
-
-            db.query(sql, newAccount, (err, result)=>{
-                if (err) {
-                    console.error('Error executing query: ' + err.stack)
-                    res.json(err.sqlMessage)
-                }
-                res.json({msg: "You have become a member of KTMOVIE"});
-            })
-        }
+            if(result[0].result == 0)
+                res.json({msg: "This username or email has been used"})
+            else if(result[0].result == 1)
+                res.json({msg: "You have become a member of KTMOVIE"})
+            else    
+                res.json({msg: "Error"})
+        })
+        
     })
 }
 

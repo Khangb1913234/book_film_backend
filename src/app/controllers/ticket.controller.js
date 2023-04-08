@@ -114,7 +114,16 @@ exports.statistic = function(req, res, next){
                             let temp = moment.tz(result[i].day, 'Asia/Ho_Chi_Minh')
                             result[i].day= temp.format("YYYY-MM-DD")
                         }
-                        res.json({tickets: result})
+                        sql = `SELECT SUMREVENUE() AS revenue`
+                        db.query(sql, (err, revenue)=>{
+                            if (err) {
+                                console.error('Error executing query: ' + err.stack)
+                                res.json({msg: "Fail"})
+                                return
+                            }
+                            res.json({tickets: result, revenue: revenue[0].revenue})
+                        })
+                        
                     }
                 })
             }
