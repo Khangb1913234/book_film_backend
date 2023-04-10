@@ -4,7 +4,12 @@ const table = "film"
 
 
 exports.findAll = function(req, res, next){
-    sql = `SELECT * FROM ${table};`
+    console.log("da vao")
+    let sql
+    if(!req.query.name)
+        sql = `SELECT * FROM ${table};`
+    else
+        sql = `SELECT * FROM ${table} WHERE name_film LIKE '%${req.query.name}%'`
 
     db.query(sql, (err, result)=>{
         if (err) {
