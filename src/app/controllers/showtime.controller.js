@@ -46,7 +46,7 @@ exports.findFull = function(req, res, next){
             return
         }
         let temp = moment.tz(result[0].date_showtime, 'Asia/Ho_Chi_Minh')
-        result[0].date_showtime = temp.format("YYYY-MM-DD")
+        result[0].date_showtime = temp.format("DD-MM-YYYY")
         res.json({showtime: result})
     })
 }

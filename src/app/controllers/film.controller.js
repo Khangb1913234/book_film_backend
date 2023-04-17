@@ -4,7 +4,6 @@ const table = "film"
 
 
 exports.findAll = function(req, res, next){
-    console.log("da vao")
     let sql
     if(!req.query.name)
         sql = `SELECT * FROM ${table};`

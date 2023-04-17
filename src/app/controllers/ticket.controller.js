@@ -112,7 +112,7 @@ exports.statistic = function(req, res, next){
                     else{
                         for(let i = 0; i < result.length; i++){
                             let temp = moment.tz(result[i].day, 'Asia/Ho_Chi_Minh')
-                            result[i].day= temp.format("YYYY-MM-DD")
+                            result[i].day= temp.format("DD-MM-YYYY")
                         }
                         sql = `SELECT SUMREVENUE() AS revenue`
                         db.query(sql, (err, revenue)=>{
@@ -241,8 +241,6 @@ exports.create = function(req, res, next){
     else{
         res.json({msg: "Fail"})
     }
-
-    
 }
 
 // exports.update = function(req, res, next){
